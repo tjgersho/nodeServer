@@ -1,12 +1,17 @@
 var express = require('express');
-
 var app = express();
+var PORT = process.env.PORT || 3000;
 
-app.get('/', function(req, resp){
+var middleware = require('./middleware.js');
 
-  resp.send('Hello Express!');
+app.use(middleware.logger);
 
+app.get('/about', middleware.requireAuthentication, function (req, res) {
+	res.send('About Us!');
 });
 
-console.log('server running port http://localhost:3000');
-app.listen(3000);
+app.use(express.static(__dirname + '/public'));
+
+app.listen(PORT, function () {
+	console.log('Express server started on port ' + PORT + '!');
+});
